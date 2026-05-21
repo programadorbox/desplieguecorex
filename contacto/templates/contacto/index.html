@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="es">
 
@@ -6,7 +7,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>CorexAndes — Software a medida</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css">
+ <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
@@ -20,7 +21,7 @@
     <div class="header-container">
 
       <a href="#inicio" class="brand" aria-label="Volver al inicio">
-        <img src="/static/img/logo.jpg" alt="CorexAndes" class="logo">
+        <img src="{% static 'img/logo.jpg' %}" alt="CorexAndes" class="logo">
         <div class="brand-name">CorexAndes</div>
       </a>
 
@@ -417,7 +418,7 @@
     </div>
   </div>
 
-  <script src="/static/js/main.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>
