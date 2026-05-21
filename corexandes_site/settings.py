@@ -1,22 +1,25 @@
 import os
-import dj_database_url  
+import pymysql
+import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
-import pymysql
-pymysql.install_as_MySQLdb()
-load_dotenv()
 
+# 1. Configuración de rutas
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- SEGURIDAD ---
+# 2. Carga de variables (busca .env localmente, pero en Render usa las del Panel)
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# 3. Puente para MySQL
+pymysql.install_as_MySQLdb()
+
+# --- SEGURIDAD Y ENTORNO ---
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-z!x9m2f8n^v1q5p0l+a3c8e4j7b6r9w1v5t0y4u2i7o8p3k')
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True' 
-
-# Permite hosts desde variables de entorno y agrega el dominio de Render cuando lo tengas
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1').split()
 
-# --- BASE DE DATOS (Aiven) ---
-# Si no hay DATABASE_URL, por defecto busca una local o da error para evitar errores silenciosos
+# --- BASE DE DATOS (Centralizada y Única) ---
+# Usamos dj_database_url para parsear la variable DATABASE_URL de Aiven
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL'),
@@ -25,8 +28,7 @@ DATABASES = {
     )
 }
 
-# ... (resto de tu configuración como INSTALLED_APPS)
-# Application definition
+# --- APLICACIONES ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,39 +70,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'corexandes_site.wsgi.application'
 
-# Database (MySQL) - edit with your credentials or use .env variables
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'corexandes_db'),
-        'USER': os.getenv('MYSQL_USER', 'root'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', '1234'),
-        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
-        'OPTIONS': {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = []
-
 LANGUAGE_CODE = 'es-cl'
 TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
+# --- ARCHIVOS ESTÁTICOS (Render/WhiteNoise) ---
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'contacto' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email (Zoho) - replace with real credentials or use env variables
+# --- EMAIL (Zoho) ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.zoho.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'your@domain.cl')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'your-zoho-password')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'tu-email@dominio.cl')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'tu-password')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
