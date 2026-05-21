@@ -1,6 +1,4 @@
-from django.shortcuts import render, redirect
-from django.conf import settings
-from django.core.mail import send_mail
+from django.shortcuts import render
 from .models import Lead
 from django.views.decorators.csrf import csrf_exempt
 
@@ -17,20 +15,12 @@ def index(request):
         mensaje = request.POST.get('mensaje', '').strip()
 
         if nombre and email:
-            # Persistencia en MySQL
-            lead = Lead.objects.create(
+            # Persistencia en MySQL (Aiven)
+            Lead.objects.create(
                 nombre=nombre, empresa=empresa, email=email,
                 telefono=telefono, interes=interes, mensaje=mensaje
             )
-            # Envío de email
-            subject = f"Nuevo lead CorexAndes: {lead.nombre} — {lead.interes}"
-            body = f"Nombre: {lead.nombre}\nEmpresa: {lead.empresa}\nEmail: {lead.email}\nTelefono: {lead.telefono}\nInteres: {lead.interes}\nMensaje:\n{lead.mensaje}"
-            
-            try:
-                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [settings.EMAIL_HOST_USER], fail_silently=False)
-                message = 'Gracias — tu mensaje fue enviado correctamente.'
-            except Exception as e:
-                message = 'Gracias — guardamos tu contacto, pero falló el envío del email.'
+            message = 'Gracias — tus datos fueron registrados correctamente.'
         else:
             message = 'Por favor completa los campos Nombre y Email.'
 
