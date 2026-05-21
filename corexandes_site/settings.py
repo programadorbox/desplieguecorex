@@ -1,13 +1,30 @@
 import os
+import dj_database_url  
 from pathlib import Path
 from dotenv import load_dotenv
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# --- SEGURIDAD ---
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'replace-me-with-a-strong-secret')
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True' 
+
+# Permite hosts desde variables de entorno y agrega el dominio de Render cuando lo tengas
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1').split()
 
+# --- BASE DE DATOS (Aiven) ---
+# Si no hay DATABASE_URL, por defecto busca una local o da error para evitar errores silenciosos
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
+
+# ... (resto de tu configuración como INSTALLED_APPS)
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
