@@ -21,14 +21,13 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL'),
         conn_max_age=600,
-        ssl_require=False  # Aiven suele manejar el SSL por fuera, esto evita conflictos
+        ssl_require=True # Esto activará SSL de forma segura
     )
 }
 
 if 'RENDER' in os.environ:
     DATABASES['default']['OPTIONS'] = {
         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        # Esto elimina parámetros conflictivos de la conexión
     }
 # --- APLICACIONES ---
 INSTALLED_APPS = [
