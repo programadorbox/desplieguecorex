@@ -1,24 +1,35 @@
+import logging
 from django.shortcuts import render
-from django.http import HttpResponse # <--- ESTO ES LO NUEVO
-from .models import Lead
 from django.views.decorators.csrf import csrf_exempt
+from .models import Lead
+
+# Configura un logger para capturar errores
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def index(request):
-    # Esto es lo que reemplaza a tu función actual
     if request.method == 'POST':
         try:
-            # Aquí va toda tu lógica de captura de datos
-            nombre = request.POST.get('nombre', '')
-            # ... resto de tus campos ...
+            # Aquí capturamos los datos
+            nombre = request.POST.get('nombre')
+            email = request.POST.get('email')
             
-            # Aquí va tu lógica de guardado
-            Lead.objects.create(nombre=nombre, ...) 
-            
+            # Intento de guardado
+            Lead.objects.create(
+                nombre=nombre, 
+                email=email,
+                empresa=request.POST.get('empresa'),
+                telefono=request.POST.get('telefono'),
+                interes=request.POST.get('interes', 'otro'),
+                mensaje=request.POST.get('mensaje')
+            )
             return render(request, 'contacto/index.html', {'message': 'Éxito'})
+            
         except Exception as e:
-            # Esto es el "debug": si algo falla, no da error 500, 
-            # muestra el error real en pantalla
-            return HttpResponse(f"Error detectado: {str(e)}", status=500)
-    
+            # ESTO ES LO IMPORTANTE:
+            # Obliga a Django a escribir el error detallado en los logs de Render
+            logger.exception("ERROR CRÍTICO AL GUARDAR EL LEAD")
+            # Devolvemos un 500 para el usuario, pero el detalle está en los logs
+            return render(request, 'contacto/index.html', {'message': 'Error interno'})
+            
     return render(request, 'contacto/index.html')
