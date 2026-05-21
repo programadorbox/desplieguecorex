@@ -24,10 +24,14 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL'),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=False  # Lo ponemos en False aquí para que no lo fuerce de forma automática
     )
 }
 
+if 'RENDER' in os.environ:
+    DATABASES['default']['OPTIONS'] = {
+        'ssl': {'ca': '/etc/ssl/certs/ca-certificates.crt'},
+    }
 # --- APLICACIONES ---
 INSTALLED_APPS = [
     'django.contrib.admin',
