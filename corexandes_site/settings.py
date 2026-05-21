@@ -78,8 +78,8 @@ USE_TZ = True
 
 # --- ARCHIVOS ESTÁTICOS (Render/WhiteNoise) ---
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'contacto' / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'contacto', 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
