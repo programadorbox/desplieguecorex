@@ -8,8 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 2. Carga de variables (busca .env localmente, pero en Render usa las del Panel)
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-# 3. Puente para MySQL
-pymysql.install_as_MySQLdb()
+
 
 # --- SEGURIDAD Y ENTORNO ---
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-z!x9m2f8n^v1q5p0l+a3c8e4j7b6r9w1v5t0y4u2i7o8p3k')
