@@ -1,7 +1,7 @@
 import os
 import dj_database_url
 from pathlib import Path
-
+from dotenv import load_dotenv  # <--- ESTO ES LO QUE FALTA
 # 1. Configuración de rutas
 BASE_DIR = Path(__file__).resolve().parent.parent
 
