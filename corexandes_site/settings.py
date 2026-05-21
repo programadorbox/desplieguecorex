@@ -1,8 +1,6 @@
 import os
-import pymysql
 import dj_database_url
 from pathlib import Path
-from dotenv import load_dotenv
 
 # 1. Configuración de rutas
 BASE_DIR = Path(__file__).resolve().parent.parent
