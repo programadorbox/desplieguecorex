@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 def index(request):
     if request.method == 'POST':
+        print(f"DATOS RECIBIDOS: {request.POST}")
         try:
             # Aquí capturamos los datos
             nombre = request.POST.get('nombre')
