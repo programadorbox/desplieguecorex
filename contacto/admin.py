@@ -3,14 +3,20 @@ from .models import Lead
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    # Aquí definimos las columnas que verás en la tabla principal
-    list_display = ('nombre', 'email', 'telefono', 'interes', 'mensaje', 'created_at')
+    # Usamos display_interes para ver el texto legible (ej: "Trazabilidad")
+    list_display = ('nombre', 'email', 'telefono', 'display_interes', 'mensaje', 'created_at')
     
-    # Esto agrega filtros laterales para encontrar leads más rápido
+    # Filtros laterales
     list_filter = ('interes', 'created_at')
     
-    # Esto permite buscar por nombre o email
+    # Buscador
     search_fields = ('nombre', 'email')
     
-    # Esto define el orden en que ves los mensajes (del más nuevo al más antiguo)
+    # Orden cronológico (más nuevo primero)
     ordering = ('-created_at',)
+
+    # Función para convertir el valor interno (ej: 'trazabilidad') en texto legible (ej: 'Trazabilidad')
+    def display_interes(self, obj):
+        return obj.get_interes_display()
+    
+    display_interes.short_description = 'Interés'
